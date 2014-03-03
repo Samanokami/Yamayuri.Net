@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Collections.Generic;
 using NMeCab;
+using System.Data.SQLite;
 
 namespace yamayuri
 {
@@ -278,7 +279,7 @@ namespace yamayuri
 
                 //書き込み先ファイルの設定
                 string[] writing_file_name = new string[15];
-                if (textBox1.Text == null)
+                if (textBox1.Text == "")
                 {
                     writing_file_name[0] = label2.Text + "ngram_moji.csv";
                     writing_file_name[1] = label2.Text + "ngram_syoji.csv";

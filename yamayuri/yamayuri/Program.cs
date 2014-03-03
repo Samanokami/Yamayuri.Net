@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NMeCab;
+using System.Data.SQLite;
 
 namespace yamayuri
 {
@@ -117,11 +118,11 @@ namespace yamayuri
                     (node.Feature.Contains("BOS/EOS") == false)
                 )
                 {
-                    if (node.Feature.Split(',').Length == 9)
+                    if (node.Feature.Split(',').Length == 17)
                     {
                         syojikei = node.Surface;
                         result = new List<string>(node.Feature.Split(','));
-                        goiso = result[6];
+                        goiso = result[7];
 
                         w_tail = w_tail + node.Length;
                         goiso_w_tail = goiso_w_tail + goiso.Length;
@@ -133,11 +134,10 @@ namespace yamayuri
                         goiso_sentence = goiso_sentence + goiso;
                         num_of_words++;
                     }
-                    else if (node.Feature.Split(',').Length == 7)
+                    else if (node.Feature.Split(',').Length == 6)
                     {
                         syojikei = goiso = node.Surface;
                         result = new List<string>(node.Feature.Split(','));
-                        //goiso = result[6];
 
                         w_tail = w_tail + node.Length;
                         goiso_w_tail = goiso_w_tail + goiso.Length;
