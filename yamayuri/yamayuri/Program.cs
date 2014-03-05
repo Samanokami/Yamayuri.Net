@@ -1040,4 +1040,95 @@ namespace yamayuri
             return copy_array;
         }
     }
+
+    public class database_access
+    {
+        private SQLiteConnection open_db(string db_name)
+        {
+            SQLiteConnection connect = new SQLiteConnection("Data Source =" + db_name);
+            connect.Open();
+            return connect;
+        }
+
+        private void close_db(string db_name)
+        {
+            SQLiteConnection connect = new SQLiteConnection("Data Source =" + db_name);
+            connect.Close();
+        }
+
+        public void create_table(string db_name, string table_name, string column)
+        {
+            //DBに接続
+            SQLiteConnection connect = open_db(db_name);
+    
+            //テーブル一覧を取得
+            List<string> table_list = new List<string>();
+            SQLiteCommand master_command = connect.CreateCommand();
+            master_command.CommandText = "SELECT tbl_name FROM sqlite_master";
+            SQLiteDataReader reader = master_command.ExecuteReader();
+            while (reader.Read())
+            {
+                table_list.Add(reader.GetString(0));
+            }
+
+            //テーブルが存在するときは削除して再作成、存在しないときは新規作成
+            if (table_list.Contains(table_name))
+            {
+                SQLiteCommand delete_command = connect.CreateCommand();
+                delete_command.CommandText = "DROP TABLE " + table_name;
+                delete_command.ExecuteNonQuery();
+
+                SQLiteCommand vacuum_command = connect.CreateCommand();
+                vacuum_command.CommandText = "VACUUM";
+                vacuum_command.ExecuteNonQuery();
+
+                SQLiteCommand create_command = connect.CreateCommand();
+                create_command.CommandText = "CREATE TABLE " + table_name + " (" + column + ")";
+                create_command.ExecuteNonQuery();
+            }
+            else
+            {
+                SQLiteCommand create_command = connect.CreateCommand();
+                create_command.CommandText = "CREATE TABLE " + table_name + "(" + column + ")";
+                create_command.ExecuteNonQuery();
+            }
+
+            //DBとの接続を解除
+            close_db(db_name);
+            //connect.Close();
+        }
+
+        public void insert(string db_name, string table_name, string insert_record)
+        {
+            //DBに接続
+            SQLiteConnection connect = open_db(db_name);
+
+            //レコードの追加
+            SQLiteCommand insert_command = connect.CreateCommand();
+            insert_command.CommandText = "INSERT INTO " + table_name + " VALUES(" + insert_record + ")";
+            insert_command.ExecuteNonQuery();
+
+            //DBとの接続を解除
+            close_db(db_name);
+        }
+
+        public string sqlize(string csv_line)
+        {
+            string insert_record = null;
+            string[] array = csv_line.Split(',');
+            foreach (string item in array)
+            {
+                if (System.Text.RegularExpressions.Regex.IsMatch(item, @"^\d+$"))
+                {
+                    insert_record = insert_record + item + ",";
+                }
+                else
+                {
+                    insert_record = insert_record + "'" + item + "'" + ",";
+                }
+            }
+            insert_record = System.Text.RegularExpressions.Regex.Replace(insert_record, ",$", "");
+            return insert_record;
+        }
+    }
 }

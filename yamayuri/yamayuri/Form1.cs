@@ -255,8 +255,8 @@ namespace yamayuri
             if (label9.Visible == true) { yamayuri_error_message = yamayuri_error_message + "ヘッダ・カラム名が更新されていません。" + Environment.NewLine; }
             if (checkedListBox1.CheckedItems.Count == 0) { yamayuri_error_message = yamayuri_error_message + "採取項目が選択されていません。" + Environment.NewLine; }
             if (label2.Text == "") { yamayuri_error_message = yamayuri_error_message + "保存先フォルダが指定されていません。" + Environment.NewLine; }
-            //if (textBox1.Text == "") { yamayuri_error_message = yamayuri_error_message + "共通タイトルが設定されていません。" + Environment.NewLine; }
-            //if ((radioButton1.Checked == false) && (radioButton2.Checked == false)) { yamayuri_error_message = yamayuri_error_message + "出力形式が選択されていません。" + Environment.NewLine; }
+            if ((textBox1.Text == "")&&(radioButton2.Checked)) { yamayuri_error_message = yamayuri_error_message + "データベース名が設定されていません。" + Environment.NewLine; }
+            if ((radioButton1.Checked == false) && (radioButton2.Checked == false)) { yamayuri_error_message = yamayuri_error_message + "出力形式が選択されていません。" + Environment.NewLine; }
             if (label10.Visible == true) { yamayuri_error_message = yamayuri_error_message + "N-gram の最大値と最小値を見直してください。" + Environment.NewLine; }
             if (label11.Visible == true) { yamayuri_error_message = yamayuri_error_message + "スパンの最大値と最小値を見直してください。"; }
             if (yamayuri_error_message != "")
@@ -264,7 +264,8 @@ namespace yamayuri
                 MessageBox.Show(yamayuri_error_message, "エラー！", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
-            {                
+            {
+
                 //Nの最小値と最大値
                 decimal n_min = numericUpDown1.Value;
                 decimal n_max = numericUpDown2.Value;
@@ -277,51 +278,122 @@ namespace yamayuri
                 string[] header_names = textBox2.Text.Split(',');
                 int header_num = 0;
 
-                //書き込み先ファイルの設定
+                //書き込み先ファイル・データベースの設定
                 string[] writing_file_name = new string[15];
-                if (textBox1.Text == "")
+                string[] writing_table_name = new string[15];
+                string db_name = label2.Text + textBox1.Text + ".ymyr";
+                database_access data_base = new database_access();
+
+                if (radioButton1.Checked)
                 {
-                    writing_file_name[0] = label2.Text + "ngram_moji.csv";
-                    writing_file_name[1] = label2.Text + "ngram_syoji.csv";
-                    writing_file_name[2] = label2.Text + "ngram_goiso.csv";
-                    writing_file_name[3] = label2.Text + "mi_syoji_before.csv";
-                    writing_file_name[4] = label2.Text + "mi_goiso_before.csv";
-                    writing_file_name[5] = label2.Text + "mi_syoji_after.csv";
-                    writing_file_name[6] = label2.Text + "mi_goiso_after.csv";
-                    writing_file_name[7] = label2.Text + "t_syoji_before.csv";
-                    writing_file_name[8] = label2.Text + "t_goiso_before.csv";
-                    writing_file_name[9] = label2.Text + "t_syoji_after.csv";
-                    writing_file_name[10] = label2.Text + "t_goiso_after.csv";
-                    writing_file_name[11] = label2.Text + "freq_syoji_before.csv";
-                    writing_file_name[12] = label2.Text + "freq_goiso_before.csv";
-                    writing_file_name[13] = label2.Text + "freq_syoji_after.csv";
-                    writing_file_name[14] = label2.Text + "freq_goiso_after.csv";
+                    if (textBox1.Text == "")
+                    {
+                        writing_file_name[0] = label2.Text + "ngram_moji.csv";
+                        writing_file_name[1] = label2.Text + "ngram_syoji.csv";
+                        writing_file_name[2] = label2.Text + "ngram_goiso.csv";
+                        writing_file_name[3] = label2.Text + "mi_syoji_before.csv";
+                        writing_file_name[4] = label2.Text + "mi_goiso_before.csv";
+                        writing_file_name[5] = label2.Text + "mi_syoji_after.csv";
+                        writing_file_name[6] = label2.Text + "mi_goiso_after.csv";
+                        writing_file_name[7] = label2.Text + "t_syoji_before.csv";
+                        writing_file_name[8] = label2.Text + "t_goiso_before.csv";
+                        writing_file_name[9] = label2.Text + "t_syoji_after.csv";
+                        writing_file_name[10] = label2.Text + "t_goiso_after.csv";
+                        writing_file_name[11] = label2.Text + "freq_syoji_before.csv";
+                        writing_file_name[12] = label2.Text + "freq_goiso_before.csv";
+                        writing_file_name[13] = label2.Text + "freq_syoji_after.csv";
+                        writing_file_name[14] = label2.Text + "freq_goiso_after.csv";
+                    }
+                    else
+                    {
+                        writing_file_name[0] = label2.Text + textBox1.Text + "_ngram_moji.csv";
+                        writing_file_name[1] = label2.Text + textBox1.Text + "_ngram_syoji.csv";
+                        writing_file_name[2] = label2.Text + textBox1.Text + "_ngram_goiso.csv";
+                        writing_file_name[3] = label2.Text + textBox1.Text + "_mi_syoji_before.csv";
+                        writing_file_name[4] = label2.Text + textBox1.Text + "_mi_goiso_before.csv";
+                        writing_file_name[5] = label2.Text + textBox1.Text + "_mi_syoji_after.csv";
+                        writing_file_name[6] = label2.Text + textBox1.Text + "_mi_goiso_after.csv";
+                        writing_file_name[7] = label2.Text + textBox1.Text + "_t_syoji_before.csv";
+                        writing_file_name[8] = label2.Text + textBox1.Text + "_t_goiso_before.csv";
+                        writing_file_name[9] = label2.Text + textBox1.Text + "_t_syoji_after.csv";
+                        writing_file_name[10] = label2.Text + textBox1.Text + "_t_goiso_after.csv";
+                        writing_file_name[11] = label2.Text + textBox1.Text + "_freq_syoji_before.csv";
+                        writing_file_name[12] = label2.Text + textBox1.Text + "_freq_goiso_before.csv";
+                        writing_file_name[13] = label2.Text + textBox1.Text + "_freq_syoji_after.csv";
+                        writing_file_name[14] = label2.Text + textBox1.Text + "_freq_goiso_after.csv";
+                    }
+
+                    //既存のCSVファイルの上書き確認
+                    string exists_filepath = null;
+                    for (int item = 0; item <= 14; item++)
+                    {
+                        if(
+                            (File.Exists(writing_file_name[item]))&&
+                            (checkedListBox1.GetItemChecked(item))
+                            )
+                        {
+                            exists_filepath = exists_filepath + writing_file_name[item].Replace(label2.Text, "") + Environment.NewLine;
+                        }
+                    }
+                    if (exists_filepath != null)
+                    {
+                        DialogResult warning_result = MessageBox.Show("既存のファイル（" + Environment.NewLine + exists_filepath + "）が保存先として指定されています。重複するファイルは上書きされますが構いませんか？", "警告！", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
+                        if (warning_result == System.Windows.Forms.DialogResult.Cancel)
+                        {
+                            return;
+                        }
+                    }
                 }
-                else
+                else if (radioButton2.Checked)
                 {
-                    writing_file_name[0] = label2.Text + textBox1.Text + "_ngram_moji.csv";
-                    writing_file_name[1] = label2.Text + textBox1.Text + "_ngram_syoji.csv";
-                    writing_file_name[2] = label2.Text + textBox1.Text + "_ngram_goiso.csv";
-                    writing_file_name[3] = label2.Text + textBox1.Text + "_mi_syoji_before.csv";
-                    writing_file_name[4] = label2.Text + textBox1.Text + "_mi_goiso_before.csv";
-                    writing_file_name[5] = label2.Text + textBox1.Text + "_mi_syoji_after.csv";
-                    writing_file_name[6] = label2.Text + textBox1.Text + "_mi_goiso_after.csv";
-                    writing_file_name[7] = label2.Text + textBox1.Text + "_t_syoji_before.csv";
-                    writing_file_name[8] = label2.Text + textBox1.Text + "_t_goiso_before.csv";
-                    writing_file_name[9] = label2.Text + textBox1.Text + "_t_syoji_after.csv";
-                    writing_file_name[10] = label2.Text + textBox1.Text + "_t_goiso_after.csv";
-                    writing_file_name[11] = label2.Text + textBox1.Text + "_freq_syoji_before.csv";
-                    writing_file_name[12] = label2.Text + textBox1.Text + "_freq_goiso_before.csv";
-                    writing_file_name[13] = label2.Text + textBox1.Text + "_freq_syoji_after.csv";
-                    writing_file_name[14] = label2.Text + textBox1.Text + "_freq_goiso_after.csv";
+                    //既存のデータベースの上書き確認
+                    if (File.Exists(db_name))
+                    {
+                        DialogResult warning_result = MessageBox.Show("既存のデータベースが保存先として指定されています。重複するテーブルは上書きされますが構いませんか？", "警告！", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
+                        if (warning_result == System.Windows.Forms.DialogResult.Cancel)
+                        {
+                            return;
+                        }
+                    }
+
+                    writing_table_name[0] = "ngram_moji";
+                    writing_table_name[1] = "ngram_syoji";
+                    writing_table_name[2] = "ngram_goiso";
+                    writing_table_name[3] = "mi_syoji_before";
+                    writing_table_name[4] = "mi_goiso_before";
+                    writing_table_name[5] = "mi_syoji_after";
+                    writing_table_name[6] = "mi_goiso_after";
+                    writing_table_name[7] = "t_syoji_before";
+                    writing_table_name[8] = "t_goiso_before";
+                    writing_table_name[9] = "t_syoji_after";
+                    writing_table_name[10] = "t_goiso_after";
+                    writing_table_name[11] = "freq_syoji_before";
+                    writing_table_name[12] = "freq_goiso_before";
+                    writing_table_name[13] = "freq_syoji_after";
+                    writing_table_name[14] = "freq_goiso_after";
                 }
+
 
                 //N-gram 用ヘッダ
                 for (int item = 0; item <= 2; item++)
                 {
                     if (checkedListBox1.GetItemChecked(item))
                     {
-                        System.IO.File.WriteAllText(writing_file_name[item], "N,グラム,品詞," + textBox2.Text + ",合計値,該当数" + Environment.NewLine);
+                        if (radioButton1.Checked)
+                        {
+                            System.IO.File.WriteAllText(writing_file_name[item], "N,グラム,品詞," + textBox2.Text + ",合計値,該当数" + Environment.NewLine);
+                        }
+                        else if (radioButton2.Checked)
+                        {
+                            //テーブル作成
+                            string column = "N INTEGER,Gram TEXT,Pos TEXT,";
+                            foreach(string header_item in header_names)
+                            {
+                                column = column + "[" + header_item + "]" + " INTEGER,";
+                            }
+                            column = column + "Sum INTEGER,Files INTEGER";
+                            data_base.create_table(db_name,writing_table_name[item],column);
+                        }
                     }
                 }
 
@@ -330,7 +402,21 @@ namespace yamayuri
                 {
                     if (checkedListBox1.GetItemChecked(item))
                     {
-                        System.IO.File.WriteAllText(writing_file_name[item], "スパン,中心語,共起語," + textBox2.Text + ",平均値,該当数" + Environment.NewLine);
+                        if (radioButton1.Checked)
+                        {
+                            System.IO.File.WriteAllText(writing_file_name[item], "スパン,中心語,共起語," + textBox2.Text + ",平均値,該当数" + Environment.NewLine);
+                        }
+                        else if (radioButton2.Checked)
+                        {
+                            //テーブル作成
+                            string column = "Span INTEGER,Node TEXT,Cooccurrence TEXT,";
+                            foreach(string header_item in header_names)
+                            {
+                                column = column + "[" + header_item + "]" + " INTEGER,";
+                            }
+                            column = column + "Average INTEGER,Files INTEGER";
+                            data_base.create_table(db_name, writing_table_name[item], column);
+                        }
                     }
                 }
 
@@ -339,7 +425,21 @@ namespace yamayuri
                 {
                     if (checkedListBox1.GetItemChecked(item))
                     {
-                        System.IO.File.WriteAllText(writing_file_name[item], "スパン,中心語,共起語," + textBox2.Text + ",合計値,平均値,該当数" + Environment.NewLine);
+                        if (radioButton1.Checked)
+                        {
+                            System.IO.File.WriteAllText(writing_file_name[item], "スパン,中心語,共起語," + textBox2.Text + ",合計値,平均値,該当数" + Environment.NewLine);
+                        }
+                        else if (radioButton2.Checked)
+                        {
+                            //テーブル作成
+                            string column = "Span INTEGER,Node TEXT,Cooccurrence TEXT,";
+                            foreach(string header_item in header_names)
+                            {
+                                column = column + "[" + header_item + "]" + " INTEGER,";
+                            }
+                            column = column + "Sum INTEGER,Average INTEGER,Files INTEGER";
+                            data_base.create_table(db_name, writing_table_name[item], column);
+                        }
                     }
                 }
 
@@ -433,7 +533,32 @@ namespace yamayuri
                 {
                     if (array[num] != null)
                     {
-                        output.forming(array[num], writing_file_name[num]);
+                        if (radioButton1.Checked)
+                        {
+                            output.forming(array[num], writing_file_name[num]);
+                        }
+                        else if (radioButton2.Checked)
+                        {
+                            List<List<string>> insert_records = output.forming(array[num]);
+                            foreach (List<string> record in insert_records)
+                            {
+                                string insert_record = null;
+                                foreach (string record_item in record)
+                                {
+                                    if (System.Text.RegularExpressions.Regex.IsMatch(record_item, @"^\d+$"))
+                                    {
+                                        insert_record = insert_record + record_item + ",";
+                                    }
+                                    else
+                                    {
+                                        insert_record = insert_record +  "'" + record_item + "'" + ",";
+                                    }
+                                }
+                                insert_record = System.Text.RegularExpressions.Regex.Replace(insert_record, ",$", "");
+                                //insert処理
+                                data_base.insert(db_name, writing_table_name[num], insert_record);
+                            }
+                        }
                     }
                 }
 
@@ -468,7 +593,15 @@ namespace yamayuri
                             List<string> syoji_mi_bef_array = output.syoji_mi_bef(syoji_before_array, syoji_count_array, number_of_words_array, header_names.Length);
                             foreach (string item in syoji_mi_bef_array)
                             {
-                                System.IO.File.AppendAllText(writing_file_name[3], item + Environment.NewLine);
+                                if (radioButton1.Checked)
+                                {
+                                    System.IO.File.AppendAllText(writing_file_name[3], item + Environment.NewLine);
+                                }
+                                else if (radioButton2.Checked)
+                                {
+                                    string insert_record = data_base.sqlize(item);
+                                    data_base.insert(db_name, writing_table_name[3], insert_record);
+                                }
                             }
                         }
 
@@ -479,7 +612,15 @@ namespace yamayuri
                             List<string> syoji_t_bef_array = output.syoji_t_bef(syoji_before_array, syoji_count_array, number_of_words_array, header_names.Length);
                             foreach (string item in syoji_t_bef_array)
                             {
-                                System.IO.File.AppendAllText(writing_file_name[7], item + Environment.NewLine);
+                                if (radioButton1.Checked)
+                                {
+                                    System.IO.File.AppendAllText(writing_file_name[7], item + Environment.NewLine);
+                                }
+                                else if (radioButton2.Checked)
+                                {
+                                    string insert_record = data_base.sqlize(item);
+                                    data_base.insert(db_name, writing_table_name[7], insert_record);
+                                }
                             }
                         }
 
@@ -489,7 +630,15 @@ namespace yamayuri
                             List<string> syoji_freq_bef_array = output.syoji_freq_bef(syoji_before_array, syoji_count_array, number_of_words_array, header_names.Length);
                             foreach (string item in syoji_freq_bef_array)
                             {
-                                System.IO.File.AppendAllText(writing_file_name[11], item + Environment.NewLine);
+                                if (radioButton1.Checked)
+                                {
+                                    System.IO.File.AppendAllText(writing_file_name[11], item + Environment.NewLine);
+                                }
+                                else if (radioButton2.Checked)
+                                {
+                                    string insert_record = data_base.sqlize(item);
+                                    data_base.insert(db_name, writing_table_name[11], insert_record);
+                                }
                             }
                         }
                     }
@@ -511,7 +660,15 @@ namespace yamayuri
                             List<string> test_output_array = output.syoji_mi_aft(syoji_after_array, syoji_count_array, number_of_words_array, header_names.Length);
                             foreach (string item in test_output_array)
                             {
-                                System.IO.File.AppendAllText(writing_file_name[5], item + Environment.NewLine);
+                                if (radioButton1.Checked)
+                                {
+                                    System.IO.File.AppendAllText(writing_file_name[5], item + Environment.NewLine);
+                                }
+                                else if (radioButton2.Checked)
+                                {
+                                    string insert_record = data_base.sqlize(item);
+                                    data_base.insert(db_name, writing_table_name[5], insert_record);
+                                }
                             }
                         }
 
@@ -521,7 +678,15 @@ namespace yamayuri
                             List<string> syoji_t_aft_array = output.syoji_t_aft(syoji_after_array, syoji_count_array, number_of_words_array, header_names.Length);
                             foreach (string item in syoji_t_aft_array)
                             {
-                                System.IO.File.AppendAllText(writing_file_name[9], item + Environment.NewLine);
+                                if (radioButton1.Checked)
+                                {
+                                    System.IO.File.AppendAllText(writing_file_name[9], item + Environment.NewLine);
+                                }
+                                else if (radioButton2.Checked)
+                                {
+                                    string insert_record = data_base.sqlize(item);
+                                    data_base.insert(db_name, writing_table_name[9], insert_record);
+                                }
                             }
                         }
 
@@ -531,7 +696,15 @@ namespace yamayuri
                             List<string> syoji_freq_aft_array = output.syoji_freq_aft(syoji_after_array, syoji_count_array, number_of_words_array, header_names.Length);
                             foreach (string item in syoji_freq_aft_array)
                             {
-                                System.IO.File.AppendAllText(writing_file_name[13], item + Environment.NewLine);
+                                if (radioButton1.Checked)
+                                {
+                                    System.IO.File.AppendAllText(writing_file_name[13], item + Environment.NewLine);
+                                }
+                                else if (radioButton2.Checked)
+                                {
+                                    string insert_record = data_base.sqlize(item);
+                                    data_base.insert(db_name, writing_table_name[13], insert_record);
+                                }
                             }
                         }
                     }
@@ -567,7 +740,15 @@ namespace yamayuri
                             List<string> goiso_mi_bef_array = output.goiso_mi_bef(goiso_before_array, goiso_count_array, number_of_words_array, header_names.Length);
                             foreach (string item in goiso_mi_bef_array)
                             {
-                                System.IO.File.AppendAllText(writing_file_name[4], item + Environment.NewLine);
+                                if (radioButton1.Checked)
+                                {
+                                    System.IO.File.AppendAllText(writing_file_name[4], item + Environment.NewLine);
+                                }
+                                else if (radioButton2.Checked)
+                                {
+                                    string insert_record = data_base.sqlize(item);
+                                    data_base.insert(db_name, writing_table_name[4], insert_record);
+                                }
                             }
                         }
 
@@ -577,7 +758,15 @@ namespace yamayuri
                             List<string> goiso_t_bef_array = output.goiso_t_bef(goiso_before_array, goiso_count_array, number_of_words_array, header_names.Length);
                             foreach (string item in goiso_t_bef_array)
                             {
-                                System.IO.File.AppendAllText(writing_file_name[8], item + Environment.NewLine);
+                                if (radioButton1.Checked)
+                                {
+                                    System.IO.File.AppendAllText(writing_file_name[8], item + Environment.NewLine);
+                                }
+                                else if (radioButton2.Checked)
+                                {
+                                    string insert_record = data_base.sqlize(item);
+                                    data_base.insert(db_name, writing_table_name[8], insert_record);
+                                }
                             }
                         }
 
@@ -587,7 +776,15 @@ namespace yamayuri
                             List<string> goiso_freq_bef_array = output.goiso_freq_bef(goiso_before_array, goiso_count_array, number_of_words_array, header_names.Length);
                             foreach (string item in goiso_freq_bef_array)
                             {
-                                System.IO.File.AppendAllText(writing_file_name[12], item + Environment.NewLine);
+                                if (radioButton1.Checked)
+                                {
+                                    System.IO.File.AppendAllText(writing_file_name[12], item + Environment.NewLine);
+                                }
+                                else if (radioButton2.Checked)
+                                {
+                                    string insert_record = data_base.sqlize(item);
+                                    data_base.insert(db_name, writing_table_name[12], insert_record);
+                                }
                             }
                         }
                     }
@@ -609,7 +806,15 @@ namespace yamayuri
                             List<string> goiso_mi_aft_array = output.goiso_mi_aft(goiso_after_array, goiso_count_array, number_of_words_array, header_names.Length);
                             foreach (string item in goiso_mi_aft_array)
                             {
-                                System.IO.File.AppendAllText(writing_file_name[6], item + Environment.NewLine);
+                                if (radioButton1.Checked)
+                                {
+                                    System.IO.File.AppendAllText(writing_file_name[6], item + Environment.NewLine);
+                                }
+                                else if (radioButton2.Checked)
+                                {
+                                    string insert_record = data_base.sqlize(item);
+                                    data_base.insert(db_name, writing_table_name[6], insert_record);
+                                }
                             }
                         }
 
@@ -619,7 +824,15 @@ namespace yamayuri
                             List<string> goiso_t_aft_array = output.goiso_t_aft(goiso_after_array, goiso_count_array, number_of_words_array, header_names.Length);
                             foreach (string item in goiso_t_aft_array)
                             {
-                                System.IO.File.AppendAllText(writing_file_name[10], item + Environment.NewLine);
+                                if (radioButton1.Checked)
+                                {
+                                    System.IO.File.AppendAllText(writing_file_name[10], item + Environment.NewLine);
+                                }
+                                else if (radioButton2.Checked)
+                                {
+                                    string insert_record = data_base.sqlize(item);
+                                    data_base.insert(db_name, writing_table_name[10], insert_record);
+                                }
                             }
                         }
 
@@ -629,12 +842,36 @@ namespace yamayuri
                             List<string> goiso_freq_aft_array = output.goiso_freq_aft(goiso_after_array, goiso_count_array, number_of_words_array, header_names.Length);
                             foreach (string item in goiso_freq_aft_array)
                             {
-                                System.IO.File.AppendAllText(writing_file_name[14], item + Environment.NewLine);
+                                if (radioButton1.Checked)
+                                {
+                                    System.IO.File.AppendAllText(writing_file_name[14], item + Environment.NewLine);
+                                }
+                                else if (radioButton2.Checked)
+                                {
+                                    string insert_record = data_base.sqlize(item);
+                                    data_base.insert(db_name, writing_table_name[14], insert_record);
+                                }
                             }
                         }
                     }
                 }
                 MessageBox.Show("終了");
+            }
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton1.Checked)
+            {
+                label3.Text = "CSV共通タイトル（オプション）";
+            }
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton2.Checked)
+            {
+                label3.Text = "データベース名";
             }
         }
     }
