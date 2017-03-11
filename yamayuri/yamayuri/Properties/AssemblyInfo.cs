@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("yamayuri")]
-[assembly: AssemblyCopyright("Copyright ©  2014 Toshiya_Hirasawa")]
+[assembly: AssemblyCopyright("Copyright ©  2014 elitos")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,5 +34,5 @@ using System.Resources;
 // 既定値にすることができます:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.1.0.1")]
 [assembly: NeutralResourcesLanguageAttribute("ja-JP")]

@@ -21,7 +21,7 @@ namespace yamayuri
             Application.Run(new Form1());
         }
     }
-
+    
     public class MeCab_kaiseki
     {
         //変数の宣言
